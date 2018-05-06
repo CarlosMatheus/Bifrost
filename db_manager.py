@@ -15,6 +15,7 @@ class DbManager:
         }
         cls.firebase = pyrebase.initialize_app(config)
         cls.db = cls.firebase.database()
+        cls.db.remove()
 
 
     @classmethod
@@ -30,15 +31,17 @@ class DbManager:
     @classmethod
     def rm_from_today(cls, sender : str, receiver : str):
         all_senders = cls.db.child("Today").get()
-        for curr_sender in all_senders.each():
-            if curr_sender.key() == sender:
-                user_data = curr_sender.val()
-                for key, value in user_data.items():
-                    if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
-                        data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
-                        cls.db.child("Today").child(curr_sender.key()).child(key).remove()
-                        if user_data[key]["receiver"] == "-1":
-                            cls.db.child("All Time").child(sender).push(data.val())
+
+        if all_senders.each() is not None:
+            for curr_sender in all_senders.each():
+                if curr_sender.key() == sender:
+                    user_data = curr_sender.val()
+                    for key, value in user_data.items():
+                        if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
+                            data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
+                            cls.db.child("Today").child(curr_sender.key()).child(key).remove()
+                            if user_data[key]["receiver"] != "-1":
+                                cls.db.child("All Time").child(sender).push(data.val())
 
 
     @classmethod
@@ -52,7 +55,7 @@ class DbManager:
         result = []
 
         all_senders = cls.db.child("Users").get()
-        if all_senders != None:
+        if all_senders.each() != None:
             for sender in all_senders.each():
                 result.append(sender.val())
 
@@ -63,7 +66,7 @@ class DbManager:
         dict_result = {}
 
         all_senders = cls.db.child("Today").get()
-        if all_senders != None:
+        if all_senders.each() != None:
             for sender in all_senders.each():
                 user_data = sender.val()
                 curr_user_data = []
@@ -97,17 +100,18 @@ class DbManager:
 
         text = -1
         all_senders = cls.db.child("Today").get()
-        for curr_sender in all_senders.each():
-            if curr_sender.key() == sender:
-                user_data = curr_sender.val()
-                for key, value in user_data.items():
-                    if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
-                        text = user_data[key]["text"]
-                        data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
-                        cls.db.child("Today").child(curr_sender.key()).child(key).remove()
-                        if user_data[key]["receiver"] == "-1":
-                            cls.db.child("All Time").child(sender).push(data.val())
-                        break
+        if all_senders.each() is not None:
+            for curr_sender in all_senders.each():
+                if curr_sender.key() == sender:
+                    user_data = curr_sender.val()
+                    for key, value in user_data.items():
+                        if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
+                            text = user_data[key]["text"]
+                            data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
+                            cls.db.child("Today").child(curr_sender.key()).child(key).remove()
+                            if user_data[key]["receiver"] != "-1":
+                                cls.db.child("All Time").child(sender).push(data.val())
+                            break
 
         return text
 
