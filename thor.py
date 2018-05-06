@@ -1,6 +1,7 @@
 import os
 import time
 import datetime
+from db_manager import DbManager
 from slackclient import SlackClient
 from bot.parser import Parser
 from bot.user import User
@@ -10,7 +11,12 @@ from bot.default_messages import DefaultMessages
 
 if __name__ == "__main__":
 
+    # Initializing database
+
+    DbManager.init_db()
+
     # Instantiating the client
+
     slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 
     # Bot id
@@ -38,11 +44,11 @@ if __name__ == "__main__":
         # Getting users names
         users_list = slack_client.api_call('users.list')['members']
 
-        users = {}
+        User.user_dict = {}
 
         for user in users_list:
             if user["id"] != bot_id:
-                users[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
+                User.user_dict[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
 
         # Initializing parser
 
@@ -52,7 +58,7 @@ if __name__ == "__main__":
 
         Handler.set_client(slack_client)
         Handler.set_bot(bot_id)
-        Handler.set_users(users)
+        Handler.set_users(User.user_dict)
 
         # Bot main loop
 
@@ -63,8 +69,8 @@ if __name__ == "__main__":
                 Handler.handle_event(message, event)
 
             if today + delay < datetime.datetime.today():
-                for key in users:
-                    users[key].answer(DefaultMessages.send_daily())
+                for key in User.user_dict:
+                    User.user_dict[key].answer(DefaultMessages.send_daily())
                 today = datetime.datetime.today()
 
             Handler.run_user_queue()
