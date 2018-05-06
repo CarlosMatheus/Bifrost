@@ -23,7 +23,7 @@ class Handler:
     @classmethod
     def send_suggested(cls, to_user, from_user):
         print(cls.users[to_user], " ", cls.users[from_user])
-        cls.users[to_user].answer("Você conhece o " + cls.users[from_user].real_name+"?, porque não enviar uma mensagem para ele?")
+        cls.users[to_user].answer("Você conhece o " + cls.users[from_user].real_name+"? Porque não enviar uma mensagem para ele?")
 
     @classmethod
     def set_bot(cls, bot_id):
@@ -49,7 +49,7 @@ class Handler:
             person = cls.users[user]
             while len(DbManager.check_for_msg(person.id)) > 0:
                 text = DbManager.send_msg(person.id)
-                person.answer(text)
+                person.answer('Você recebeu uma mensagem:\n'+text)
 
     @classmethod
     def handle_event(cls, message, event):
