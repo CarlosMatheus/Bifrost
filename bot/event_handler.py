@@ -42,7 +42,11 @@ class Handler:
     def handle_event(cls, message, event):
 
         if event["channel"].startswith("D"):
-            cls.users[event["user"]].add_message(message)
+            if message.startswith("\\"):
+                cls.handle_command(message, event)
+
+            else:
+                cls.users[event["user"]].add_message(message)
 
         user_id, message = Parser.parse_direct_mention(message)
 
@@ -53,3 +57,18 @@ class Handler:
     @classmethod
     def post(cls, message, channel):
         cls.response_list += [(message, channel)]
+
+    @classmethod
+    def handle_command(cls, command, event):
+
+        user = cls.users[event["user"]]
+
+        words = command.split(" ")
+
+        if len(words) > 1:
+            user.answer("Invalid command")
+
+        elif words[0] == "\\ajuda":
+            user.answer(DefaultMessages.mensagem_ajuda())
+        elif words[0] == "\\comandos":
+            user.answer(DefaultMessages.mensagem_comandos())

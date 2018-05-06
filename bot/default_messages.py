@@ -14,3 +14,20 @@ class DefaultMessages:
     @classmethod
     def custom_thanks(cls, nome):
         return 'Obrigado! Sua mensagem será enviada para ' + nome
+
+    @classmethod
+    def mensagem_ajuda(cls):
+        return 'Esse bot ajuda a espalhar mensagens no ambiente de trabalho, ' \
+               'por meio dele são enviadas mensagens para seus colegas de trabalho.' \
+               'Basta enviar uma mensagem para o bot. Se você quiser mandar para alguém específico,' \
+               'basta incluir o prefixo @\n' \
+               'Exemplo:\n' \
+               '@Bot tudo bom?' \
+               'Para ver os comando digite \comandos'
+
+    @classmethod
+    def mensagem_comandos(cls):
+        return 'Comandos:\n' \
+               '\\ajuda\n' \
+               '\\comandos'
+
