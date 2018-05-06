@@ -42,7 +42,7 @@ class GraphMaker:
         """
         Set the affinity to all nodes -> n^2
         """
-        for origin, message_list in data_hash_of_hash:
+        for origin, message_list in data_hash_of_hash.items():
             actual_graph_node = graph.adjacency_list[graph.name_map[origin]]
             for message in message_list:
                 text_str = message["text"]
