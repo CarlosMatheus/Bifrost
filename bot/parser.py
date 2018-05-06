@@ -28,12 +28,14 @@ class Parser:
         """
         for event in slack_events:
             if event["type"] == "message" and not "subtype" in event:
-                user_id, message = cls.parse_direct_mention(event["text"])
-                print(event["channel"], " ", event["user"])
+                # user_id, message = cls.parse_direct_mention(event["text"])
+                # print(event["channel"], " ", event["user"])
 
                 #t = cls.slack_client.api_call('im.open', user=event["user"])
 
                 #t = t["channel"]["id"]
+
+                message = event['text']
 
                 if event['channel'].startswith("D"):
                     return message, event
