@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Constants
     RTM_READ_DELAY = 0.02
 
-    delay = datetime.timedelta(seconds=20)
+    delay = datetime.timedelta(minutes=30)
 
     # Current data
 
@@ -72,9 +72,8 @@ if __name__ == "__main__":
             if today + delay < datetime.datetime.today():
                 for key in User.user_dict:
                     User.user_dict[key].answer(DefaultMessages.send_daily())
+                Handler.send_daily_messages()
                 today = datetime.datetime.today()
-
-            Handler.send_daily_messages()
 
             Handler.run_user_queue()
 

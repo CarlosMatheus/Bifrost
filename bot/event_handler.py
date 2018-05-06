@@ -42,7 +42,7 @@ class Handler:
     def handle_event(cls, message, event):
 
         if event["channel"].startswith("D"):
-            cls.users[event["user"]].add_message_to_database(message)
+            cls.users[event["user"]].add_message(message)
 
         user_id, message = Parser.parse_direct_mention(message)
 
