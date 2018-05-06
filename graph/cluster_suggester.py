@@ -37,7 +37,7 @@ class ClusterSuggester:
                     max_dist = dist
                     max_dist_elements = (elem1, elem2)
         if max_dist_elements is not None:
-            if cls.__has_not_suggested(max_dist_elements):
+            if cls.__has_not_suggested(max_dist_elements, cls.suggestions):
                 cls.suggestions[max_dist_elements[0]] = max_dist_elements[1]
                 cls.suggestions[max_dist_elements[1]] = max_dist_elements[0]
 
