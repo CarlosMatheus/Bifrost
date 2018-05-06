@@ -4,6 +4,10 @@ class Graph:
         self.adjacency_list = list()
         self.name_map = dict()
 
+    @property
+    def size(self):
+        return len(self.adjacency_list)
+
     def set_name_map(self):
         for i in range(len(self.adjacency_list)):
             self.name_map[self.adjacency_list[i]] = i
