@@ -37,7 +37,6 @@ class Parser:
 
                 message = event['text']
 
-                if event['channel'].startswith("D"):
-                    return message, event
+                return message, event
 
         return None, None

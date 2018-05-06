@@ -39,6 +39,7 @@ if __name__ == "__main__":
         # Initializing handler
 
         Handler.set_client(slack_client)
+        Handler.set_bot(bot_id)
 
         # Bot main loop
 
