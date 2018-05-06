@@ -27,6 +27,10 @@ class DbManager:
     def add_to_today(cls, sender : str, receiver : str, msg : str) -> None:
         cls.db.child("Today").child(sender).push({"sender": sender, "receiver" : receiver, "text": msg})
 
+    @classmethod
+    def add_to_suggested(cls, sender : str, receiver : str):
+        data = {"sender" : sender, "receiver" : receiver}
+        cls.db.child("Suggested").set(data)
 
     @classmethod
     def rm_from_today(cls, sender : str, receiver : str):
@@ -114,4 +118,9 @@ class DbManager:
                             break
 
         return text
+
+    @classmethod
+    def listen_to_suggested(cls, handler):
+        my_stream = cls.db.child("Suggested").stream(handler)
+        return my_stream
 
