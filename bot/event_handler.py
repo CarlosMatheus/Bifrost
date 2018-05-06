@@ -3,6 +3,7 @@ from .default_messages import DefaultMessages
 class Handler:
     slack_client = None
     bot_id = None
+    users = None
     response_list = []
 
     @classmethod
@@ -12,6 +13,10 @@ class Handler:
     @classmethod
     def set_bot(cls, bot_id):
         cls.bot_id =bot_id
+
+    @classmethod
+    def set_users(cls, users):
+        cls.users = users
 
     @classmethod
     def run_user_queue(cls):
@@ -27,7 +32,7 @@ class Handler:
     def handle_event(cls, message, event):
 
         if event["channel"].startswith("D"):
-            print("aqui")
+            cls.users[event["user"]].add_message_to_database(message)
 
         user_id, message = Parser.parse_direct_mention(message)
 

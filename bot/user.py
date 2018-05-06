@@ -13,4 +13,7 @@ class User:
     def answer(self, text):
         Handler.post(text, self.id)
 
+    def add_message_to_database(self, message):
+        print("User: " + self.real_name + " message: " + message)
+
 
