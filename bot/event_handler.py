@@ -106,8 +106,11 @@ class Handler:
             for elem2, value in elems.items():
                 graph.add_edge(cls.users[elem1.node.name].name, cls.users[elem2.node.name].name, weight=value)
 
-        t = threading.Thread(target=cls.plot, args=(graph,))
-        t.start()
+        #t = threading.Thread(target=cls.plot, args=(graph,))
+        #t.start()
+        plt.subplot(111)
+        nx.draw(g, with_labels=True)
+        plt.show()
 
 
     @classmethod
