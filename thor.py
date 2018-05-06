@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # Instantiating the client
 
-    slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+    slack_client = SlackClient(open("token.txt").read())
 
     # Bot id
     bot_id = None
