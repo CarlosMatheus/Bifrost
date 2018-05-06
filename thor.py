@@ -12,11 +12,12 @@ from bot.default_messages import DefaultMessages
 def handler(message):
     if message["event"] == "put":
         data = message["data"]
-        if len(data)==1:
-            for key, value in data.items():
-                data = value
-                break
-        Handler.send_suggested(data["sender"], data["receiver"])
+        if data is not None:
+            if len(data)==1:
+                for key, value in data.items():
+                    data = value
+                    break
+            Handler.send_suggested(data["sender"], data["receiver"])
 
 
 if __name__ == "__main__":
@@ -72,7 +73,7 @@ if __name__ == "__main__":
         Handler.set_users(User.user_dict)
 
         DbManager.listen_to_suggested(handler)
-        DbManager.add_to_suggested("UAL39CRNK", "UAK11AA4S")
+        # DbManager.add_to_suggested("UAL39CRNK", "UAK11AA4S")
 
         # Bot main loop
         curr = datetime.datetime.today()
