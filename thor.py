@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Constants
     RTM_READ_DELAY = 0.02
 
-    delay = datetime.timedelta(seconds=20)
+    delay = datetime.timedelta(minutes=30)
 
     # Current data
 

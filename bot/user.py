@@ -42,6 +42,8 @@ class User:
         else:
             if message_original == "sim":
                 self.add_message_to_database(self.stored_message)
+            else:
+                self.answer("A mensagem não será enviada")
             self.ready_to_send = False
 
     def add_message_to_database(self, message_original):
