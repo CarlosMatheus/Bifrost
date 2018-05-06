@@ -46,7 +46,7 @@ class GraphMaker:
             actual_graph_node = graph.adjacency_list[graph.name_map[origin]]
             for message in message_list:
                 text_str = message["text"]
-                destiny_str = message["destiny"]
+                destiny_str = message["receiver"]
                 destiny_idx = graph.name_map[destiny_str]
                 destiny_node = graph.adjacency_list[destiny_idx]
                 affinity = cls.calculate_affinity_based_on_text_size(text_str)
