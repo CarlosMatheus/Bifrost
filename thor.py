@@ -2,6 +2,7 @@ import os
 import time
 from slackclient import SlackClient
 from bot.parser import Parser
+from bot.user import User
 from bot.event_handler import Handler
 
 
@@ -30,7 +31,7 @@ if __name__ == "__main__":
 
         # Getting users names
         users_list = slack_client.api_call('users.list')['members']
-        users_names = [x["name"] for x in users_list]
+        users = [User(x, slack_client.api_call('team.info', id=x["team_id"])["team"]["name"]) for x in users_list]
 
         # Initializing parser
 
@@ -48,6 +49,8 @@ if __name__ == "__main__":
 
             if event:
                 Handler.handle_event(message, event)
+                for user in users:
+                    user.answer("hello "+ user.real_name)
 
             Handler.run_user_queue()
 
