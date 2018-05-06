@@ -1,5 +1,5 @@
-from graph import Graph
-from node import Node
+from graph.graph import Graph
+from graph.node import Node
 
 
 class GraphMaker:
