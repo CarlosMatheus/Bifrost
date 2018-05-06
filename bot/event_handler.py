@@ -4,6 +4,7 @@ from db_manager import DbManager
 from graph.graph_maker import GraphMaker
 from graph.cluster import *
 from graph.cluster_suggester import ClusterSuggester
+from typing import List
 
 class Handler:
     slack_client = None
@@ -91,4 +92,14 @@ class Handler:
         g = GraphMaker.create_graph(DbManager.read_from_ul(), DbManager.read_from_db())
         cg = ClusterGroup(g)
         clusters = cg.cluster()
+        cls.debug_clusters(clusters)
         ClusterSuggester.make_suggestion(cg)
+
+    @classmethod
+    def debug_clusters(cls, clusters: List[Cluster]):
+        print("Found", len(clusters), "clusters")
+        for i in range(0,len(clusters)):
+            names = ""
+            for elem in clusters[i].elements:
+                names += elem.node.name + " "
+            print("Cluster", i, ":", names)
