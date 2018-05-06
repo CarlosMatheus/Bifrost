@@ -18,7 +18,19 @@ class DbManager:
 
     @classmethod
     def add_to_today(cls, sender : str, receiver : str, msg : str) -> None:
-        cls.db.child("Today").child(sender).push({"sender": sender, "text": msg})
+        cls.db.child("Today").child(sender).push({"sender": sender, "receiver" : receiver, "text": msg})
+
+    @classmethod
+    def rm_from_today(cls, sender : str, receiver : str):
+        all_senders = cls.db.child("Today").get()
+        for curr_sender in all_senders.each():
+            if curr_sender.key() == sender:
+                user_data = curr_sender.val()
+                for key, value in user_data.items():
+                    if user_data[key]["receiver"] == receiver:
+                        data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
+                        cls.db.child("Today").child(curr_sender.key()).child(key).remove()
+                        cls.db.child("All Time").child(sender).push(data.val())
 
     @classmethod
     def start_new_day(cls) -> None:
@@ -29,6 +41,7 @@ class DbManager:
     @classmethod
     def read_from_db(cls) -> dict:
         dict_result = {}
+
         all_senders = cls.db.child("All Time").get()
         for sender in all_senders.each():
             user_data = sender.val()
@@ -36,4 +49,41 @@ class DbManager:
             for key, value in user_data.items():
                 curr_user_data.append(value)
             dict_result[sender.key()] = curr_user_data
+
         return dict_result
+
+    @classmethod
+    def check_for_msg(cls, receiver : str) -> list:
+        possible_senders = []
+
+        all_senders = cls.db.child("Today").get()
+        for sender in all_senders.each():
+            user_data = sender.val()
+            for key, value in user_data.items():
+                if user_data[key]["receiver"] == receiver:
+                    possible_senders.append(sender.key())
+
+        return possible_senders
+
+
+    @classmethod
+    def send_msg(cls, receiver : str, sender=None) -> str:
+        if sender == None:
+            possible_senders = cls.check_for_msg(receiver)
+            sender = possible_senders[0]
+
+        text = -1
+        all_senders = cls.db.child("Today").get()
+        for curr_sender in all_senders.each():
+            if curr_sender.key() == sender:
+                user_data = curr_sender.val()
+                for key, value in user_data.items():
+                    if user_data[key]["receiver"] == receiver:
+                        text = user_data[key]["text"]
+                        data = cls.db.child("Today").child(curr_sender.key()).child(key).get()
+                        cls.db.child("Today").child(curr_sender.key()).child(key).remove()
+                        cls.db.child("All Time").child(sender).push(data.val())
+                        break
+
+        return text
+
