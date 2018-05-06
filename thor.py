@@ -1,9 +1,11 @@
 import os
 import time
+import datetime
 from slackclient import SlackClient
 from bot.parser import Parser
 from bot.user import User
 from bot.event_handler import Handler
+from bot.default_messages import DefaultMessages
 
 
 if __name__ == "__main__":
@@ -19,9 +21,13 @@ if __name__ == "__main__":
     users_names = None
 
     # Constants
-    RTM_READ_DELAY = 1
+    RTM_READ_DELAY = 0.02
 
-    EXAMPLE_COMMAND = 'do'
+    delay = datetime.timedelta(seconds=20)
+
+    # Current data
+
+    today = datetime.datetime.today()
 
     if slack_client.rtm_connect(with_team_state=False):
         print("Thor connected and running!")
@@ -31,7 +37,12 @@ if __name__ == "__main__":
 
         # Getting users names
         users_list = slack_client.api_call('users.list')['members']
-        users = [User(x, slack_client.api_call('team.info', id=x["team_id"])["team"]["name"]) for x in users_list]
+
+        users = {}
+
+        for user in users_list:
+            if user["id"] != bot_id:
+                users[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
 
         # Initializing parser
 
@@ -41,6 +52,7 @@ if __name__ == "__main__":
 
         Handler.set_client(slack_client)
         Handler.set_bot(bot_id)
+        Handler.set_users(users)
 
         # Bot main loop
 
@@ -49,8 +61,11 @@ if __name__ == "__main__":
 
             if event:
                 Handler.handle_event(message, event)
-                for user in users:
-                    user.answer("hello "+ user.real_name)
+
+            if today + delay < datetime.datetime.today():
+                for key in users:
+                    users[key].answer(DefaultMessages.send_daily())
+                today = datetime.datetime.today()
 
             Handler.run_user_queue()
 
