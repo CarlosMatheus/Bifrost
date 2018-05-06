@@ -6,21 +6,22 @@ class ClusterSuggester:
     suggestions = dict()
 
     @classmethod
-    def make_suggestion(cls, cluster_arr):
+    def make_suggestion(cls, cg):
+        cluster_arr = cg.clusters
         cls.suggestions = dict()
         for cluster in cluster_arr:
-            min_dist_cluster = cls.__get_closest_cluster(cluster, cluster_arr)
+            min_dist_cluster = cls.__get_closest_cluster(cluster, cluster_arr, cg)
             if min_dist_cluster is not None:
                 cls.__make_recommendations(cluster, min_dist_cluster)
         cls.__pass_suggestions()
 
     @classmethod
-    def __get_closest_cluster(cls, cluster, cluster_list):
+    def __get_closest_cluster(cls, cluster, cluster_list, cg):
         min = 1000000
         min_dist_cluster = None
         for other_cluster in cluster_list:
             if other_cluster != cluster:
-                dist = cluster.cluster_dist(cluster, other_cluster)
+                dist = cg.cluster_dist(cluster, other_cluster)
                 if dist < min:
                     min = dist
                     min_dist_cluster = other_cluster
