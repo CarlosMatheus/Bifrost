@@ -20,8 +20,6 @@ if __name__ == "__main__":
     # Initializing database
 
     DbManager.init_db()
-    DbManager.listen_to_suggested(handler)
-    DbManager.add_to_suggested("UAK11AA4S", "UAL39CRNK")
 
     # Instantiating the client
 
@@ -35,9 +33,9 @@ if __name__ == "__main__":
     users_names = None
 
     # Constants
-    RTM_READ_DELAY = 0.02
+    RTM_READ_DELAY = datetime.timedelta(seconds=0.02)
 
-    delay = datetime.timedelta(minutes=30)
+    delay = datetime.timedelta(minutes=10)
 
     # Current data
 
@@ -69,23 +67,29 @@ if __name__ == "__main__":
         Handler.set_bot(bot_id)
         Handler.set_users(User.user_dict)
 
+        DbManager.listen_to_suggested(handler)
+        DbManager.add_to_suggested("UAL39CRNK", "UAK11AA4S")
+
         # Bot main loop
+        curr = datetime.datetime.today()
 
         while True:
-            message, event = Parser.parse_bot_commands(slack_client.rtm_read())
+            if curr + RTM_READ_DELAY < datetime.datetime.today():
+                message, event = Parser.parse_bot_commands(slack_client.rtm_read())
 
-            if event:
-                Handler.handle_event(message, event)
+                if event:
+                    Handler.handle_event(message, event)
 
-            if today + delay < datetime.datetime.today():
-                for key in User.user_dict:
-                    User.user_dict[key].answer(DefaultMessages.send_daily())
-                Handler.send_daily_messages()
-                today = datetime.datetime.today()
+                if today + delay < datetime.datetime.today() or Handler.now:
+                    for key in User.user_dict:
+                        User.user_dict[key].answer(DefaultMessages.send_daily())
+                    Handler.send_daily_messages()
+                    today = datetime.datetime.today()
+                    Handler.now = False
 
-            Handler.run_user_queue()
+                Handler.run_user_queue()
 
-            time.sleep(RTM_READ_DELAY)
+                curr = datetime.datetime.today()
 
     else:
         print("Connection failed. Exception traceback printed above.")

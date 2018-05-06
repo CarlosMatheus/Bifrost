@@ -1,12 +1,16 @@
 from .parser import Parser
 from .default_messages import DefaultMessages
 from db_manager import DbManager
+from graph.graph_maker import GraphMaker
+from graph.cluster import *
+from graph.cluster_suggester import ClusterSuggester
 
 class Handler:
     slack_client = None
     bot_id = None
     users = None
     response_list = []
+    now =  False
 
     @classmethod
     def set_client(cls, slack_client):
@@ -14,7 +18,8 @@ class Handler:
 
     @classmethod
     def send_suggested(cls, to_user, from_user):
-        cls.users[to_user].answer("Fala com o " + cls.users[from_user].real_name)
+        print(cls.users[to_user], " ", cls.users[from_user])
+        cls.users[to_user].answer("Você conhece o " + cls.users[from_user].real_name+"?, porque não enviar uma mensagem para ele?")
 
     @classmethod
     def set_bot(cls, bot_id):
@@ -76,3 +81,14 @@ class Handler:
             user.answer(DefaultMessages.mensagem_ajuda())
         elif words[0] == "\\comandos":
             user.answer(DefaultMessages.mensagem_comandos())
+        elif words[0] == "\\now":
+            cls.now = True
+        elif words[0] == "\\alg":
+            cls.run_algorithm()
+
+    @classmethod
+    def run_algorithm(cls):
+        g = GraphMaker.create_graph(DbManager.read_from_ul(), DbManager.read_from_db())
+        cg = ClusterGroup(g)
+        clusters = cg.cluster()
+        ClusterSuggester.make_suggestion(cg)
