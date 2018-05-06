@@ -35,7 +35,7 @@ class GraphMaker:
         return 0
 
     @classmethod
-    def __set_all_affinities_to_zero(cls, graph):
+    def __set_all_affinities_to_zero(cls, graph: Graph) -> None:
         """
         n^2 alg -> set all node adjacent list to all other nodes having affinity zero
         """
