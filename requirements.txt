@@ -22,3 +22,4 @@ websocket-client==0.47.0
 numpy
 matplotlib
 tensorflow
+networkx

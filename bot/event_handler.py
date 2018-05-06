@@ -5,6 +5,8 @@ from graph.graph_maker import GraphMaker
 from graph.cluster import *
 from graph.cluster_suggester import ClusterSuggester
 from typing import List
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class Handler:
     slack_client = None
@@ -94,6 +96,16 @@ class Handler:
         clusters = cg.cluster()
         cls.debug_clusters(clusters)
         ClusterSuggester.make_suggestion(cg)
+
+    @classmethod
+    def visual_debug(cls, cg: ClusterGroup):
+        graph = nx.Graph()
+        for elem1,elems in cg.elem_dist_matrix.items():
+            for elem2,value in elems.items():
+                graph.add_edge(cls.users[elem1.node.name].name, cls.users[elem2.node.name].name, weight=value)
+        plt.subplot(121)
+        nx.draw(graph)
+        plt.show()
 
     @classmethod
     def debug_clusters(cls, clusters: List[Cluster]):
