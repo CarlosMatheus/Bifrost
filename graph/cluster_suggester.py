@@ -1,0 +1,60 @@
+from db_manager import DbManager
+
+
+class ClusterSuggester:
+
+    @classmethod
+    def make_suggestion(cls, cluster_arr):
+        cls.suggestions = dict()
+        for cluster in cluster_arr:
+            min_dist_cluster = cls.get_closest_cluster(cluster, cluster_arr)
+            if min_dist_cluster is not None:
+                cls.make_recommendations(cluster, min_dist_cluster)
+        cls.pass_suggestions()
+
+    @classmethod
+    def get_closest_cluster(cls, cluster, cluster_list):
+        min = 1000000000000000000000
+        min_dist_cluster = None
+        for other_cluster in cluster_list:
+            if other_cluster != cluster:
+                dist = cluster.cluster_dist(cluster, other_cluster)
+                if dist < min:
+                    min = dist
+                    min_dist_cluster = other_cluster
+        return min_dist_cluster
+
+    @classmethod
+    def make_recommendations(cls, cluster1, cluster2):
+        max_dist = 0
+        max_dist_elements = None
+        for elem1 in cluster1.elements:
+            for elem2 in cluster2.elements:
+                dist = elem1.dist(elem2)
+                if dist > max_dist:
+                    max_dist = dist
+                    max_dist_elements = (elem1, elem2)
+        if max_dist_elements is not None:
+            if cls.has_not_suggested(max_dist_elements):
+                cls.suggestions[max_dist_elements[0]] = max_dist_elements[1]
+                cls.suggestions[max_dist_elements[1]] = max_dist_elements[0]
+
+    @classmethod
+    def has_not_suggested(cls, tup_ele, suggestions):
+        if suggestions[tup_ele[0]] is not None:
+            if suggestions[tup_ele[0]] == tup_ele[1]:
+                return False
+        if suggestions[tup_ele[1]] is not None:
+            if suggestions[tup_ele[1]] == tup_ele[0]:
+                return False
+        return True
+
+    @classmethod
+    def pass_suggestions(cls):
+        alredy_added = dict()
+        for node1, node2 in cls.suggestions.items():
+            tup = (node1, node2)
+            if cls.has_not_suggested(tup, alredy_added):
+                DbManager.add_to_suggested(node1.node.name, node2.node.name)
+            alredy_added[node1] = node2
+            alredy_added[node2] = node1
