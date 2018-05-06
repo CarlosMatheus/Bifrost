@@ -44,10 +44,10 @@ class ClusterSuggester:
 
     @classmethod
     def __has_not_suggested(cls, tup_ele, suggestions):
-        if suggestions[tup_ele[0]] is not None:
+        if suggestions.get(tup_ele[0]) is not None:
             if suggestions[tup_ele[0]] == tup_ele[1]:
                 return False
-        if suggestions[tup_ele[1]] is not None:
+        if suggestions.get(tup_ele[1]) is not None:
             if suggestions[tup_ele[1]] == tup_ele[0]:
                 return False
         return True

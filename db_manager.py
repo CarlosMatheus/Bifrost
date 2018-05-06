@@ -69,7 +69,7 @@ class DbManager:
     def read_from_db(cls) -> dict:
         dict_result = {}
 
-        all_senders = cls.db.child("Today").get()
+        all_senders = cls.db.child("All Time").get()
         if all_senders.each() != None:
             for sender in all_senders.each():
                 user_data = sender.val()

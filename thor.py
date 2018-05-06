@@ -53,7 +53,7 @@ if __name__ == "__main__":
         User.user_dict = {}
 
         for user in users_list:
-            if user["id"] != bot_id:
+            if not user["is_bot"] and user["name"] != "slackbot":
                 User.user_dict[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
                 DbManager.add_to_user_list(user["id"], slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
 
