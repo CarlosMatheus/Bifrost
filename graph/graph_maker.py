@@ -49,11 +49,11 @@ class GraphMaker:
                 destiny_str = message["receiver"]
                 destiny_idx = graph.name_map[destiny_str]
                 destiny_node = graph.adjacency_list[destiny_idx]
-                affinity = cls.calculate_affinity_based_on_text_size(text_str)
+                affinity = cls.__calculate_affinity_based_on_text_size(text_str)
                 actual_graph_node.affinity_hash[destiny_node] += affinity
 
     @classmethod
-    def calculate_affinity_based_on_text_size(cls, text: str) -> float:
+    def __calculate_affinity_based_on_text_size(cls, text: str) -> float:
         return (len(text)**(2/3))
 
     @classmethod
