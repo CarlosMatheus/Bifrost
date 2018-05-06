@@ -23,7 +23,7 @@ class Handler:
     @classmethod
     def send_suggested(cls, to_user, from_user):
         print(cls.users[to_user], " ", cls.users[from_user])
-        cls.users[to_user].answer("Você conhece o " + cls.users[from_user].real_name+"?, porque não enviar uma mensagem para ele?")
+        cls.users[to_user].answer("Você conhece o " + cls.users[from_user].real_name+"? Porque não enviar uma mensagem para ele?")
 
     @classmethod
     def set_bot(cls, bot_id):
