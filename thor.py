@@ -9,11 +9,19 @@ from bot.event_handler import Handler
 from bot.default_messages import DefaultMessages
 
 
+def handler(message):
+    if message["event"] == "put":
+        data = message["data"]
+        Handler.send_suggested(data["sender"], data["receiver"])
+
+
 if __name__ == "__main__":
 
     # Initializing database
 
     DbManager.init_db()
+    DbManager.listen_to_suggested(handler)
+    DbManager.add_to_suggested("UAK11AA4S", "UAL39CRNK")
 
     # Instantiating the client
 

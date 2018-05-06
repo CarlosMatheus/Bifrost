@@ -13,6 +13,10 @@ class Handler:
         cls.slack_client = slack_client
 
     @classmethod
+    def send_suggested(cls, to_user, from_user):
+        cls.users[to_user].answer("Fala com o " + cls.users[from_user].real_name)
+
+    @classmethod
     def set_bot(cls, bot_id):
         cls.bot_id =bot_id
 
