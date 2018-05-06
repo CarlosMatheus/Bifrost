@@ -14,11 +14,35 @@ class User:
         self.profile_name = data["profile"]["display_name"]
         self.team = team
 
+        # Flow control variables
+        self.ready_to_send = False
+        self.stored_message = ""
+
     def __str__(self):
         return self.name
 
     def answer(self, text):
         Handler.post(text, self.id)
+
+    def add_message(self, message_original):
+        if not (self.ready_to_send):
+            user_id, message = Parser.parse_direct_mention(message_original)
+
+            if user_id is None:
+                response = "-1"
+                message = message_original
+            else:
+                response = user_id
+
+            self.answer("Tem certeza que quer mandar?\n " + message + "\n Se sim digite sim")
+
+            self.stored_message = message_original
+            self.ready_to_send = True
+
+        else:
+            if message_original == "sim":
+                self.add_message_to_database(self.stored_message)
+            self.ready_to_send = False
 
     def add_message_to_database(self, message_original):
 
@@ -29,7 +53,6 @@ class User:
             message = message_original
         else:
             response = user_id
-            print(self.id, " to ", User.user_dict[user_id])
 
         DbManager.add_to_today(self.id, response, message)
 
