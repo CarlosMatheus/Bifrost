@@ -79,11 +79,12 @@ class DbManager:
         possible_senders = []
 
         all_senders = cls.db.child("Today").get()
-        for sender in all_senders.each():
-            user_data = sender.val()
-            for key, value in user_data.items():
-                if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
-                    possible_senders.append(sender.key())
+        if all_senders.each() is not None:
+            for sender in all_senders.each():
+                user_data = sender.val()
+                for key, value in user_data.items():
+                    if user_data[key]["receiver"] == receiver or user_data[key]["receiver"] == "-1":
+                        possible_senders.append(sender.key())
 
         return possible_senders
 

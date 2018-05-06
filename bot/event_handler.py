@@ -1,5 +1,7 @@
 from .parser import Parser
 from .default_messages import DefaultMessages
+from db_manager import DbManager
+
 class Handler:
     slack_client = None
     bot_id = None
@@ -27,6 +29,14 @@ class Handler:
                 channel = channel["channel"]["id"]
                 cls.slack_client.api_call('chat.postMessage', channel=channel,
                                       text=element[0])
+
+    @classmethod
+    def send_daily_messages(cls):
+        for user in cls.users:
+            person = cls.users[user]
+            while len(DbManager.check_for_msg(person.id)) > 0:
+                text = DbManager.send_msg(person.id)
+                person.answer(text)
 
     @classmethod
     def handle_event(cls, message, event):
