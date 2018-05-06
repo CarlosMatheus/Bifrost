@@ -9,7 +9,7 @@ class Graph:
     def size(self):
         return len(self.adjacency_list)
 
-    def set_name_map(self):
+    def set_name_obj_map(self):
         for i in range(len(self.adjacency_list)):
             self.obj_map[self.adjacency_list[i]] = i
             self.name_map[self.adjacency_list[i].name] = i
