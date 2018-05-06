@@ -49,6 +49,7 @@ if __name__ == "__main__":
         for user in users_list:
             if user["id"] != bot_id:
                 User.user_dict[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
+                DbManager.add_to_user_list(user["id"], slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
 
         # Initializing parser
 
@@ -72,6 +73,8 @@ if __name__ == "__main__":
                 for key in User.user_dict:
                     User.user_dict[key].answer(DefaultMessages.send_daily())
                 today = datetime.datetime.today()
+
+            Handler.send_daily_messages()
 
             Handler.run_user_queue()
 
