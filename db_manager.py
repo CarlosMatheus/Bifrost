@@ -21,14 +21,19 @@ class DbManager:
         cls.db.child("Today").child(sender).push({"sender": sender, "text": msg})
 
     @classmethod
-    def start_new_day(cls):
+    def start_new_day(cls) -> None:
         data = cls.db.child("Today").get()
         cls.db.child("All Time").set(data.val())
         cls.db.child("Today").remove()
 
     @classmethod
-    def read_from_db(cls):
-        result = None
-        all_senders = cls.db.child("Today").get()
-        for user in all_senders.each():
-
+    def read_from_db(cls) -> dict:
+        dict_result = {}
+        all_senders = cls.db.child("All Time").get()
+        for sender in all_senders.each():
+            user_data = sender.val()
+            curr_user_data = []
+            for key, value in user_data.items():
+                curr_user_data.append(value)
+            dict_result[sender.key()] = curr_user_data
+        return dict_result

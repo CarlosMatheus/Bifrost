@@ -5,7 +5,7 @@ from graph.node import Node
 class GraphMaker:
 
     @classmethod
-    def create_graph(cls, pyrebase, people_and_sector_list):
+    def create_graph(cls, pyrebase, people_and_sector_list: list) -> Graph:
         db = pyrebase.database()
         data_hash_of_hash = cls.__get_data_hash(db)
 
@@ -20,7 +20,7 @@ class GraphMaker:
         return graph
 
     @classmethod
-    def __initiate_graph(cls, people_and_sector_list):
+    def __initiate_graph(cls, people_and_sector_list: list) -> Graph:
         g = Graph()
         for elem in people_and_sector_list:
             name = elem["name"]
@@ -42,23 +42,24 @@ class GraphMaker:
         for node in graph.adjacency_list:
             for node_to_add in graph.adjacency_list:
                 if node_to_add != node:
-                    tup_to_add = (node_to_add, 0)
-                    node.adj_vertices.append(tup_to_add)
+                    node.affinity_hash[node_to_add] = 0
+                    node.adj_vertices.append(node_to_add)
 
     @classmethod
-    def __insert_data(cls, graph, data_hash_of_hash):
+    def __insert_data(cls, graph: Graph, data_hash_of_hash: dict) -> None:
         """
         Set the affinity to all nodes -> n^2
         """
         for origin, message_list in data_hash_of_hash:
+            actual_graph_node = graph.adjacency_list[graph.name_map[origin]]
             for message in message_list:
-                text = message["text"]
-                destiny_node = graph.adjacency_list[graph.name_map[message["destiny"]]]
-                actual_graph_node = graph.adjacency_list[graph.name_map[origin]]
-                affinity = cls.calculate_affinity_based_on_text_size(text)
-                new_tup = (destiny_node, actual_graph_node.adjacency_list[1] + affinity)
-                actual_graph_node.adjacency_list = new_tup
+                text_str = message["text"]
+                destiny_str = message["destiny"]
+                destiny_idx = graph.name_map[destiny_str]
+                destiny_node = graph.adjacency_list[destiny_idx]
+                affinity = cls.calculate_affinity_based_on_text_size(text_str)
+                actual_graph_node.affinity_hash[destiny_node] += affinity
 
     @classmethod
-    def calculate_affinity_based_on_text_size(cls, text):
-        return len(text)**(2/3)
+    def calculate_affinity_based_on_text_size(cls, text: str) -> float:
+        return (len(text)**(2/3))
