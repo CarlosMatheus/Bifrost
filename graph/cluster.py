@@ -36,7 +36,7 @@ class Cluster:
 
 class ClusterGroup:
 
-    STOP_THRS = 4  # Cards
+    STOP_THRS = 10  # Cards
     MAX_ITER = 1000  # Cards
 
     def __init__(self, graph: Graph) -> None:
@@ -158,6 +158,8 @@ class ClusterGroup:
             Do clustering algorithm(Hierarchical Clustering)
         :return: List of clusters of optimized elements' correlation
         '''
+        if self.graph.size < 1:
+            return []
         self.__init_clusters()
 
         for i in range(0, self.graph.size-1):

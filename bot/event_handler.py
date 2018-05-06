@@ -99,7 +99,7 @@ class Handler:
     def debug_clusters(cls, clusters: List[Cluster]):
         print("Found", len(clusters), "clusters")
         for i in range(0,len(clusters)):
-            names = ""
+            names = []
             for elem in clusters[i].elements:
-                names += elem.node.name + " "
-            print("Cluster", i, ":", names)
+                names += [elem.node.name]
+            print("Cluster", i, "(disp=",clusters[i].dispersion(),":", ' '.join([cls.users[x].name for x in names]))
