@@ -17,7 +17,7 @@ class ClusterSuggester:
 
     @classmethod
     def __get_closest_cluster(cls, cluster, cluster_list, cg):
-        min = 1000000000000000000000
+        min = 1000000
         min_dist_cluster = None
         for other_cluster in cluster_list:
             if other_cluster != cluster:
