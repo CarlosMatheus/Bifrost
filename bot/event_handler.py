@@ -49,7 +49,7 @@ class Handler:
             person = cls.users[user]
             while len(DbManager.check_for_msg(person.id)) > 0:
                 text = DbManager.send_msg(person.id)
-                person.answer(text)
+                person.answer('Você recebeu uma mensagem:\n'+text)
 
     @classmethod
     def handle_event(cls, message, event):
