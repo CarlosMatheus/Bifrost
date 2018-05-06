@@ -18,6 +18,11 @@ class DbManager:
 
 
     @classmethod
+    def add_to_user_list(cls, name : str, sector: str) -> None:
+        data = {"name" : name, "sector" : sector}
+        cls.db.child("Users").push(data)
+
+    @classmethod
     def add_to_today(cls, sender : str, receiver : str, msg : str) -> None:
         cls.db.child("Today").child(sender).push({"sender": sender, "receiver" : receiver, "text": msg})
 
@@ -42,6 +47,16 @@ class DbManager:
         cls.db.child("All Time").set(data.val())
         cls.db.child("Today").remove()
 
+    @classmethod
+    def read_from_ul(cls) -> list:
+        result = []
+
+        all_senders = cls.db.child("Users").get()
+        if all_senders != None:
+            for sender in all_senders.each():
+                result.append(sender.val())
+
+        return result
 
     @classmethod
     def read_from_db(cls) -> dict:
