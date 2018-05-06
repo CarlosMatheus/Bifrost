@@ -10,10 +10,13 @@ points = tf.constant(np.random.uniform(0, 10, (points_n, 2)))
 centroids = tf.Variable(tf.slice(tf.random_shuffle(points), [0, 0], [clusters_n, -1]))
 
 points_expanded = tf.expand_dims(points, 0)
+print(points_expanded)
 centroids_expanded = tf.expand_dims(centroids, 1)
+print(centroids_expanded)
 
 distances = tf.reduce_sum(tf.square(tf.subtract(points_expanded, centroids_expanded)), 2)
 assignments = tf.argmin(distances, 0)
+print(assignments)
 
 means = []
 for c in range(clusters_n):
