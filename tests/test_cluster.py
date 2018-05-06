@@ -11,10 +11,16 @@ if __name__ == '__main__':
     for name in people:
         DbManager.add_to_user_list(name, 'marketing')
 
-    DbManager.add_to_today('felipe', 'shark', 'f - s')
-    DbManager.add_to_today('felipe', 'coe', 'f - c')
-    DbManager.add_to_today('felipe', 'aloysio', 'f - a')
-    DbManager.add_to_today('coe', 'aloysio', 'c - a')
+    DbManager.add_to_today('felipe', 'shark', 'oi shark')
+    DbManager.add_to_today('felipe', 'coe', 'quie')
+    DbManager.add_to_today('felipe', 'aloysio', 'porra aloysio')
+    DbManager.add_to_today('coe', 'aloysio', 'olha so o pirata haha')
 
     g = GraphMaker.create_graph(DbManager.read_from_ul(), DbManager.read_from_db())
-    print(g)
+    for node in g.adjacency_list:
+        pass
+
+    cg = ClusterGroup(g)
+    clusters = cg.cluster()
+    for c in clusters:
+        pass

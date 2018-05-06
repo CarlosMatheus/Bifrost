@@ -36,7 +36,7 @@ class Cluster:
 
 class ClusterGroup:
 
-    STOP_THRS = 10  # Cards
+    STOP_THRS = 4  # Cards
     MAX_ITER = 1000  # Cards
 
     def __init__(self, graph: Graph) -> None:
