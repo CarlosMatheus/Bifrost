@@ -30,7 +30,7 @@ class Cluster:
             for elem2 in self.elements:
                 if elem is not elem2:
                     disp += elem.dist(elem2)
-        disp /= 2 # distances were counted twice
+        disp /= 2  # distances were counted twice
         return disp
 
 
