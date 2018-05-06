@@ -2,33 +2,8 @@ import os
 import time
 from slackclient import SlackClient
 from bot.parser import Parser
-
-
-def get_id_from_name(name):
-    for user in users_list:
-        if user["id"] == name:
-            return user["real_name"]
-
-
-def handle_command(command, channel):
-    """
-        Executes bot command if the command is known
-    """
-    # Default response is help text for the user
-    default_response = "Not sure what you mean. Try *{}*.".format(EXAMPLE_COMMAND)
-
-    # Finds and executes the given command, filling in response
-    response = None
-    # This is where you start to implement more commands!
-    if command.startswith(EXAMPLE_COMMAND):
-        response = "Sure...write some more code then I can do that!"
-
-    # Sends the response back to the channel
-    slack_client.api_call(
-        "chat.postMessage",
-        channel=channel,
-        text=response or default_response
-    )
+from bot.user import User
+from bot.event_handler import Handler
 
 
 if __name__ == "__main__":
@@ -56,11 +31,16 @@ if __name__ == "__main__":
 
         # Getting users names
         users_list = slack_client.api_call('users.list')['members']
-        users_names = [x["name"] for x in users_list]
+        users = [User(x, slack_client.api_call('team.info', id=x["team_id"])["team"]["name"]) for x in users_list]
 
         # Initializing parser
 
         Parser.set_client(slack_client)
+
+        # Initializing handler
+
+        Handler.set_client(slack_client)
+        Handler.set_bot(bot_id)
 
         # Bot main loop
 
@@ -68,7 +48,12 @@ if __name__ == "__main__":
             message, event = Parser.parse_bot_commands(slack_client.rtm_read())
 
             if event:
-                handle_command(None, None)
+                Handler.handle_event(message, event)
+                for user in users:
+                    user.answer("hello "+ user.real_name)
+
+            Handler.run_user_queue()
+
             time.sleep(RTM_READ_DELAY)
 
     else:
