@@ -12,6 +12,10 @@ from bot.default_messages import DefaultMessages
 def handler(message):
     if message["event"] == "put":
         data = message["data"]
+        if len(data)==1:
+            for key, value in data.items():
+                data = value
+                break
         Handler.send_suggested(data["sender"], data["receiver"])
 
 

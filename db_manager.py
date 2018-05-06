@@ -30,7 +30,7 @@ class DbManager:
     @classmethod
     def add_to_suggested(cls, sender : str, receiver : str):
         data = {"sender" : sender, "receiver" : receiver}
-        cls.db.child("Suggested").set(data)
+        cls.db.child("Suggested").push(data)
 
     @classmethod
     def rm_from_today(cls, sender : str, receiver : str):
