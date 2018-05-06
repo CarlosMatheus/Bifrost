@@ -1,8 +1,8 @@
 class Graph:
 
     def __int__(self):
-        self.adjacency_list = list()
-        self.name_map = dict()
+        self.adjacency_list = list()  # list of node references
+        self.name_map = dict()  # key = node reference, value = index of that node reference in adjacency_list
 
     def set_name_map(self):
         for i in range(len(self.adjacency_list)):
