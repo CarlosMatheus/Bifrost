@@ -8,7 +8,7 @@ class GraphMaker:
     def create_graph(cls, people_and_sector_list: list, data_hash_of_hash: dict) -> Graph:
         # Create the graph
         graph = cls.__initiate_graph(people_and_sector_list)
-        graph.set_name_map()
+        graph.set_name_obj_map()
 
         # Work on graph
         cls.__set_all_affinities_to_zero(graph)
@@ -42,7 +42,7 @@ class GraphMaker:
         """
         Set the affinity to all nodes -> n^2
         """
-        for origin, message_list in data_hash_of_hash:
+        for origin, message_list in data_hash_of_hash.items():
             actual_graph_node = graph.adjacency_list[graph.name_map[origin]]
             for message in message_list:
                 text_str = message["text"]

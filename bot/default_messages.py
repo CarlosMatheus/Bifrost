@@ -1,11 +1,11 @@
 class DefaultMessages:
     @classmethod
     def contact_on_direct(cls):
-        return 'Hey there! If you want to talk please send a direct message'
+        return 'Ola! Se quiser mandar uma mensagem motivadora para alguém é só me mandar um direct'
 
     @classmethod
     def send_daily(cls):
-        return 'Hey there! It\'s a great time now to send your daily message'
+        return 'Olá! É uma ótima hora de enviar sua mensagem diária'
 
     @classmethod
     def default_thanks(cls):
