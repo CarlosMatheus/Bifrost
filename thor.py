@@ -1,39 +1,22 @@
 import os
 import time
+import datetime
+from db_manager import DbManager
 from slackclient import SlackClient
 from bot.parser import Parser
-
-
-def get_id_from_name(name):
-    for user in users_list:
-        if user["id"] == name:
-            return user["real_name"]
-
-
-def handle_command(command, channel):
-    """
-        Executes bot command if the command is known
-    """
-    # Default response is help text for the user
-    default_response = "Not sure what you mean. Try *{}*.".format(EXAMPLE_COMMAND)
-
-    # Finds and executes the given command, filling in response
-    response = None
-    # This is where you start to implement more commands!
-    if command.startswith(EXAMPLE_COMMAND):
-        response = "Sure...write some more code then I can do that!"
-
-    # Sends the response back to the channel
-    slack_client.api_call(
-        "chat.postMessage",
-        channel=channel,
-        text=response or default_response
-    )
+from bot.user import User
+from bot.event_handler import Handler
+from bot.default_messages import DefaultMessages
 
 
 if __name__ == "__main__":
 
+    # Initializing database
+
+    DbManager.init_db()
+
     # Instantiating the client
+
     slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 
     # Bot id
@@ -44,9 +27,13 @@ if __name__ == "__main__":
     users_names = None
 
     # Constants
-    RTM_READ_DELAY = 1
+    RTM_READ_DELAY = 0.02
 
-    EXAMPLE_COMMAND = 'do'
+    delay = datetime.timedelta(seconds=20)
+
+    # Current data
+
+    today = datetime.datetime.today()
 
     if slack_client.rtm_connect(with_team_state=False):
         print("Thor connected and running!")
@@ -56,11 +43,22 @@ if __name__ == "__main__":
 
         # Getting users names
         users_list = slack_client.api_call('users.list')['members']
-        users_names = [x["name"] for x in users_list]
+
+        User.user_dict = {}
+
+        for user in users_list:
+            if user["id"] != bot_id:
+                User.user_dict[user["id"]] = User(user, slack_client.api_call('team.info', id=user["team_id"])["team"]["name"])
 
         # Initializing parser
 
         Parser.set_client(slack_client)
+
+        # Initializing handler
+
+        Handler.set_client(slack_client)
+        Handler.set_bot(bot_id)
+        Handler.set_users(User.user_dict)
 
         # Bot main loop
 
@@ -68,7 +66,15 @@ if __name__ == "__main__":
             message, event = Parser.parse_bot_commands(slack_client.rtm_read())
 
             if event:
-                handle_command(None, None)
+                Handler.handle_event(message, event)
+
+            if today + delay < datetime.datetime.today():
+                for key in User.user_dict:
+                    User.user_dict[key].answer(DefaultMessages.send_daily())
+                today = datetime.datetime.today()
+
+            Handler.run_user_queue()
+
             time.sleep(RTM_READ_DELAY)
 
     else:
