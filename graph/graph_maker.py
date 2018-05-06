@@ -8,7 +8,7 @@ class GraphMaker:
     def create_graph(cls, people_and_sector_list: list, data_hash_of_hash: dict) -> Graph:
         # Create the graph
         graph = cls.__initiate_graph(people_and_sector_list)
-        graph.set_name_map()
+        graph.set_name_obj_map()
 
         # Work on graph
         cls.__set_all_affinities_to_zero(graph)
@@ -47,7 +47,7 @@ class GraphMaker:
             for message in message_list:
                 text_str = message["text"]
                 destiny_str = message["receiver"]
-                destiny_idx = graph.name_map[destiny_str]
+                destiny_idx = graph.obj_map[destiny_str]
                 destiny_node = graph.adjacency_list[destiny_idx]
                 affinity = cls.__calculate_affinity_based_on_text_size(text_str)
                 actual_graph_node.affinity_hash[destiny_node] += affinity
