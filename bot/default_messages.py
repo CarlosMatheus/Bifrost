@@ -5,7 +5,7 @@ class DefaultMessages:
 
     @classmethod
     def send_daily(cls):
-        return 'Olá! É uma ótima hora de enviar sua mensagem diária'
+        return 'Olá! Mande aqui uma mensagem para um amigo seu começando com @nome_do_amigo!'
 
     @classmethod
     def default_thanks(cls):
@@ -29,5 +29,5 @@ class DefaultMessages:
     def mensagem_comandos(cls):
         return 'Comandos:\n' \
                '\\ajuda\n' \
-               '\\comandos'
+               '\\c omandos'
 

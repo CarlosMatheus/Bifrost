@@ -109,7 +109,7 @@ class Handler:
         #t = threading.Thread(target=cls.plot, args=(graph,))
         #t.start()
         plt.subplot(111)
-        nx.draw(g, with_labels=True)
+        nx.draw(graph, with_labels=True)
         plt.show()
 
 
