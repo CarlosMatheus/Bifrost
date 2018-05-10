@@ -1,4 +1,4 @@
-from db_manager import DbManager
+from data_managers.db_manager import DbManager
 
 
 class ClusterSuggester:

@@ -1,7 +1,5 @@
-import os
-import time
 import datetime
-from db_manager import DbManager
+from data_managers.db_manager import DbManager
 from slackclient import SlackClient
 from bot.parser import Parser
 from bot.user import User

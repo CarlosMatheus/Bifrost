@@ -1,5 +1,5 @@
 from .event_handler import Handler
-from db_manager import DbManager
+from data_managers.db_manager import DbManager
 from .parser import Parser
 from .default_messages import DefaultMessages
 

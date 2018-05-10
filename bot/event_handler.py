@@ -1,13 +1,13 @@
 from .parser import Parser
 from .default_messages import DefaultMessages
-from db_manager import DbManager
+from data_managers.db_manager import DbManager
 from graph.graph_maker import GraphMaker
 from graph.cluster import *
 from graph.cluster_suggester import ClusterSuggester
 from typing import List
 import networkx as nx
 import matplotlib.pyplot as plt
-import threading
+
 
 class Handler:
     slack_client = None

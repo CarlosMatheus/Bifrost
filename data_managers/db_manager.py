@@ -80,7 +80,6 @@ class DbManager:
 
         return dict_result
 
-
     @classmethod
     def check_for_msg(cls, receiver : str) -> list:
         possible_senders = []
@@ -94,7 +93,6 @@ class DbManager:
                         possible_senders.append(sender.key())
 
         return possible_senders
-
 
     @classmethod
     def send_msg(cls, receiver : str, sender=None) -> str:
@@ -116,7 +114,6 @@ class DbManager:
                             if user_data[key]["receiver"] != "-1":
                                 cls.db.child("All Time").child(sender).push(data.val())
                             break
-
         return text
 
     @classmethod
