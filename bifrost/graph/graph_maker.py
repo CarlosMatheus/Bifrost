@@ -1,5 +1,5 @@
-from graph.graph import Graph
-from graph.node import Node
+from bifrost.graph import Graph
+from bifrost.graph import Node
 
 
 class GraphMaker:

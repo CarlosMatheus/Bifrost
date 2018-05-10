@@ -1,5 +1,6 @@
 import pyrebase
 
+
 class DbManager:
 
     firebase = None
@@ -19,21 +20,21 @@ class DbManager:
 
 
     @classmethod
-    def add_to_user_list(cls, name : str, sector: str) -> None:
+    def add_to_user_list(cls, name: str, sector: str) -> None:
         data = {"name" : name, "sector" : sector}
         cls.db.child("Users").push(data)
 
     @classmethod
-    def add_to_today(cls, sender : str, receiver : str, msg : str) -> None:
+    def add_to_today(cls, sender: str, receiver : str, msg : str) -> None:
         cls.db.child("Today").child(sender).push({"sender": sender, "receiver" : receiver, "text": msg})
 
     @classmethod
-    def add_to_suggested(cls, sender : str, receiver : str):
+    def add_to_suggested(cls, sender: str, receiver : str) -> None:
         data = {"sender" : sender, "receiver" : receiver}
         cls.db.child("Suggested").push(data)
 
     @classmethod
-    def rm_from_today(cls, sender : str, receiver : str):
+    def rm_from_today(cls, sender:  str, receiver : str) -> None:
         all_senders = cls.db.child("Today").get()
 
         if all_senders.each() is not None:
@@ -47,7 +48,6 @@ class DbManager:
                             if user_data[key]["receiver"] != "-1":
                                 cls.db.child("All Time").child(sender).push(data.val())
 
-
     @classmethod
     def start_new_day(cls) -> None:
         data = cls.db.child("Today").get()
@@ -59,7 +59,7 @@ class DbManager:
         result = []
 
         all_senders = cls.db.child("Users").get()
-        if all_senders.each() != None:
+        if all_senders.each() is not None:
             for sender in all_senders.each():
                 result.append(sender.val())
 
@@ -70,7 +70,7 @@ class DbManager:
         dict_result = {}
 
         all_senders = cls.db.child("All Time").get()
-        if all_senders.each() != None:
+        if all_senders.each() is not None:
             for sender in all_senders.each():
                 user_data = sender.val()
                 curr_user_data = []
@@ -81,7 +81,7 @@ class DbManager:
         return dict_result
 
     @classmethod
-    def check_for_msg(cls, receiver : str) -> list:
+    def check_for_msg(cls, receiver: str) -> list:
         possible_senders = []
 
         all_senders = cls.db.child("Today").get()
@@ -95,8 +95,8 @@ class DbManager:
         return possible_senders
 
     @classmethod
-    def send_msg(cls, receiver : str, sender=None) -> str:
-        if sender == None:
+    def send_msg(cls, receiver: str, sender=None) -> str:
+        if sender is None:
             possible_senders = cls.check_for_msg(receiver)
             sender = possible_senders[0]
 

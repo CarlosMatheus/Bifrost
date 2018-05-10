@@ -1,9 +1,9 @@
 from .parser import Parser
 from .default_messages import DefaultMessages
-from data_managers.db_manager import DbManager
-from graph.graph_maker import GraphMaker
-from graph.cluster import *
-from graph.cluster_suggester import ClusterSuggester
+from bifrost.data_managers.db_manager import DbManager
+from bifrost.graph import GraphMaker
+from bifrost.graph.cluster import *
+from bifrost.graph import ClusterSuggester
 from typing import List
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -44,7 +44,7 @@ class Handler:
                                       text=element[0])
 
     @classmethod
-    def send_daily_messages(cls):
+    def bifrost(cls):
         for user in cls.users:
             person = cls.users[user]
             while len(DbManager.check_for_msg(person.id)) > 0:

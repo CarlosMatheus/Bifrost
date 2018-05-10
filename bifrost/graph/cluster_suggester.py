@@ -1,4 +1,4 @@
-from data_managers.db_manager import DbManager
+from bifrost.data_managers.db_manager import DbManager
 
 
 class ClusterSuggester:

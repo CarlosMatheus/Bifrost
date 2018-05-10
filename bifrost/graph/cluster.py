@@ -1,7 +1,4 @@
 from typing import List, Tuple
-from graph.graph import *
-from graph.node import *
-import tensorflow as tf
 
 
 class Element:

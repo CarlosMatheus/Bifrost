@@ -1,10 +1,10 @@
 import datetime
-from data_managers.db_manager import DbManager
+from bifrost.data_managers.db_manager import DbManager
 from slackclient import SlackClient
-from bot.parser import Parser
-from bot.user import User
-from bot.event_handler import Handler
-from bot.default_messages import DefaultMessages
+from bifrost.bot.parser import Parser
+from bifrost.bot.user import User
+from bifrost.bot.event_handler import Handler
+from bifrost.bot.default_messages import DefaultMessages
 
 
 def handler(message):
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                 if today + delay < datetime.datetime.today() or Handler.now:
                     for key in User.user_dict:
                         User.user_dict[key].answer(DefaultMessages.send_daily())
-                    Handler.send_daily_messages()
+                    Handler.bifrost()
                     today = datetime.datetime.today()
                     Handler.now = False
 
