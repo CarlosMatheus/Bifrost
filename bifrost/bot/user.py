@@ -1,4 +1,4 @@
-from .event_handler import Handler
+from bifrost.data_managers.event_handler import Handler
 from bifrost.data_managers.db_manager import DbManager
 from .parser import Parser
 from .default_messages import DefaultMessages

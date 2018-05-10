@@ -1,5 +1,5 @@
-from .parser import Parser
-from .default_messages import DefaultMessages
+from bifrost.bot.parser import Parser
+from bifrost.bot.default_messages import DefaultMessages
 from bifrost.data_managers.db_manager import DbManager
 from bifrost.graph import GraphMaker
 from bifrost.graph.cluster import *

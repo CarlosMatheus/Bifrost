@@ -3,7 +3,7 @@ from bifrost.data_managers.db_manager import DbManager
 from slackclient import SlackClient
 from bifrost.bot.parser import Parser
 from bifrost.bot.user import User
-from bifrost.bot.event_handler import Handler
+from bifrost.data_managers.event_handler import Handler
 from bifrost.bot.default_messages import DefaultMessages
 
 
