@@ -1,10 +1,10 @@
 from typing import List, Tuple
-from graph.graph import *
-from graph.node import *
-import tensorflow as tf
 
 
 class Element:
+    '''
+        Class representation of an element of the clutering space
+    '''
 
     def __init__(self, node: Node, thrs: float) -> None:
         self.thrs = thrs
@@ -16,6 +16,10 @@ class Element:
 
 
 class Cluster:
+    '''
+        Set of close elements that are grouped as a single entity.
+        Represent a set of users with relevant social interaction
+    '''
 
     def __init__(self, elems: List[Element]) -> None:
         self.elements = elems
@@ -24,7 +28,12 @@ class Cluster:
     def size(self) -> int:
         return len(self.elements)
 
-    def dispersion(self):
+    @property
+    def dispersion(self) -> float:
+        '''
+            The dispersion of a cluster is a measure of the clustering error
+        :return: The cluster dispersion
+        '''
         disp = 0.0
         for elem in self.elements:
             for elem2 in self.elements:
@@ -35,23 +44,25 @@ class Cluster:
 
 
 class ClusterGroup:
+    '''
+        Clustering space
+    '''
 
-    STOP_THRS = 10  # Cards
-    MAX_ITER = 1000  # Cards
+    STOP_THRS = 10  # Minimal dispersion error needed to avoid 2 clusters' merge
 
     def __init__(self, graph: Graph) -> None:
-        self.graph = graph
-        self.thrs = graph.greatest_edge()
+        self.graph = graph  # Reference to graph bijection
+        self.thrs = graph.greatest_edge() # Maximum distance between any two elements of the space
 
         self.all_elements = self.__create_elements(graph)
-        #self.tf_elements = tf.constant(self.elements)
         self.elem_dist_matrix = {}
         self.__calc_elem_dists()
 
         self.clusters = []
-        #self.tf_clusters = []
-
         self.cluster_dist_matrix = {}
+
+        # self.tf_elements = tf.constant(self.elements)
+        #self.tf_clusters = []
 
     def __create_elements(self, graph: Graph) -> List[Element]:
         '''
@@ -89,15 +100,15 @@ class ClusterGroup:
 
     def cluster_dist(self, cluster_a: Cluster, cluster_b: Cluster) -> float:
         '''
+            Compute cluster interdistance without any centroid information.
             O(cluster_a.size * cluster_b.size)
-        :param cluster_a: some pretty cluster
-        :param cluster_b: some other pretty cluster
+        :param cluster_a: some cluster
+        :param cluster_b: some other cluster
         :return: the distance between clusters a and b(mean distance between elems)
         '''
         if cluster_a is None or cluster_b is None:
             raise ValueError
 
-        # TODO: HOW THE HELL TO COMPUTE CLUSTER DISTANCE WITHOUT 2 FUCKING LOOPS
         if self.cluster_dist_matrix.get(cluster_a) is not None and self.cluster_dist_matrix[cluster_a].get(cluster_b) is not None:
             return self.cluster_dist_matrix[cluster_a][cluster_b]
 
@@ -119,13 +130,15 @@ class ClusterGroup:
 
     def merge_clusters(self, cluster_a: Cluster, cluster_b: Cluster) -> None:
         '''
-
-        :param cluster_a: beautiful cluster
-        :param cluster_b: some other handsome cluster
-        :return: big fat merged cluster from cluster_a and cluster_b
+            Combine elements of two distinct clusters into one single bigger cluster
+        :param cluster_a: a cluster
+        :param cluster_b: some other cluster
+        :return: merged cluster from cluster_a and cluster_b
         '''
 
         if cluster_a is None or cluster_b is None:
+            raise ValueError
+        if cluster_a is cluster_b:
             raise ValueError
 
         self.clusters.remove(cluster_a)
@@ -137,6 +150,12 @@ class ClusterGroup:
         self.clusters.append(Cluster(cluster_a.elements + cluster_b.elements))
 
     def nearest_clusters(self) -> Tuple[Cluster, Cluster]:
+        '''
+            Finds pair of clusters with minimal distance between each other
+        :return: Tuple with the two nearest clusters
+        '''
+        if len(self.clusters) < 2:
+            raise RuntimeError('Clustering space has less 2 clusters')
         cluster_a = None
         cluster_b = None
         min_dist = None
@@ -151,11 +170,11 @@ class ClusterGroup:
         return cluster_a, cluster_b
 
 ####################################################################
-####################### Hierarchical Clustering ####################
 ####################################################################
+
     def cluster(self) -> List[Cluster]:
         '''
-            Do clustering algorithm(Hierarchical Clustering)
+            Do clustering algorithm (Hierarchical Clustering)
         :return: List of clusters of optimized elements' correlation
         '''
         if self.graph.size < 1:
@@ -165,7 +184,7 @@ class ClusterGroup:
         for i in range(0, self.graph.size-1):
             cluster_a, cluster_b = self.nearest_clusters()
             new_cluster = Cluster(cluster_a.elements + cluster_b.elements)
-            if new_cluster.dispersion() > ClusterGroup.STOP_THRS:
+            if new_cluster.dispersion > ClusterGroup.STOP_THRS:
                 break
             self.merge_clusters(cluster_a, cluster_b)
         return self.clusters

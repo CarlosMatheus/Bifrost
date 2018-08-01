@@ -1,7 +1,6 @@
-from graph.graph import *
-from graph.graph_maker import *
-from graph.cluster import *
-from db_manager import *
+from bifrost.graph.graph_maker import *
+from bifrost.graph.cluster import *
+from bifrost.data_managers.db_manager import *
 
 if __name__ == '__main__':
     DbManager.init_db()
